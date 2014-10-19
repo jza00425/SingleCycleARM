@@ -73,9 +73,9 @@ module arm_core (
 
   // Forced interface signals -- required for synthesis to work OK.
   // This is probably not what you want!
-  assign        mem_addr = 0;
-  assign        mem_data_in = mem_data_out;
-  assign        mem_write_en = 4'b0;
+  // assign        mem_addr = 0;
+  // assign        mem_data_in = mem_data_out;
+  // assign        mem_write_en = 4'b0;
 
   wire [3:0]    dcd_rn, dcd_rd, dcd_rm;
   wire [3:0]    dcd_mul_rn, dcd_mul_rd, dcd_mul_rs;
@@ -172,31 +172,25 @@ module arm_core (
 	  .halted(halted)
   );
 
-  // Outputs
-  rn_data, rm_data, rs_data, pc_out, cpsr_out,
-  // Inputs
-  rn_num, rm_num, rs_num, rd_num, rd_data, rd_we,
-  pc_in, pc_we, cpsr_in, cpsr_we,
-  clk, rst_b, halted
-);
 
-  // synthesis translate_off
-  //synopsys translate_off
-  initial begin
-    // Delete this block when you are ready to try for real
-    $display("");
-    $display("");
-    $display("");
-    $display("");
-    $display(">>>>> This works much better after you have hooked up the reg file. <<<<<");
-    $display("");
-    $display("");
-    $display("");
-    $display("");
-    $finish;
-  end
-  //synopsys translate_on
-  // synthesis translate_on
+
+  // // synthesis translate_off
+  // //synopsys translate_off
+  // initial begin
+  //   // Delete this block when you are ready to try for real
+  //   $display("");
+  //   $display("");
+  //   $display("");
+  //   $display("");
+  //   $display(">>>>> This works much better after you have hooked up the reg file. <<<<<");
+  //   $display("");
+  //   $display("");
+  //   $display("");
+  //   $display("");
+  //   $finish;
+  // end
+  // //synopsys translate_on
+  // // synthesis translate_on
 
   wire [31:0] alu_out;
   wire        alu_cout;
@@ -254,8 +248,27 @@ module arm_alu(alu_out, alu_cout, alu_op1, alu_op2, alu_sel, alu_cin);
   input       [3:0]   alu_sel;
   input               alu_cin;
 
+  assign carry_in = {31'd0, alu_cin};
+
   always_comb begin
-    alu_out = alu_op1 + alu_op2;
+	  case(alu_sel)
+		  OPD_AND: {alu_cout, alu_out} = alu_op1 & alu_op2;
+		  OPD_EOR: {alu_cout, alu_out} = alu_op1 ^ alu_op2;
+		  OPD_SUB: integer'{{alu_cout, alu_out}} = integer'(alu_op1) - integer'(alu_op2);
+		  OPD_RSB: integer'{{alu_cout, alu_out}} = integer'(alu_op2) - integer'(alu_op1);
+		  OPD_ADD: integer'{{alu_cout, alu_out}} = integer'(alu_op1) + integer'(alu_op2);
+		  OPD_ADC: integer'{{alu_cout, alu_out}} = integer'(alu_op1) + integer'(alu_op2) + integer'(carry_in);
+		  OPD_SBC: integer'{{alu_cout, alu_out}} = integer'(alu_op1) - integer'(alu_op2) + integer'(carry_in) - 1;
+		  OPD_RSC: integer'{{alu_cout, alu_out}} = integer'(alu_op2) - integer'(alu_op1) + integer'(carry_in) - 1;
+		  OPD_TST: {alu_cout, alu_out} = alu_op1 & alu_op2;
+		  OPD_TEQ: {alu_cout, alu_out} = alu_op1 ^ alu_op2;
+		  OPD_CMP: integer'{{alu_cout, alu_out}} = integer'(alu_op1) - integer'(alu_op2);
+		  OPD_CMN: integer'{{alu_cout, alu_out}} = integer'(alu_op1) + integer'(alu_op2);
+		  OPD_ORR: {alu_cout, alu_out} = alu_op1 | alu_op2;
+		  OPD_MOV: {alu_cout, alu_out} = alu_op2;
+		  OPD_BIC: {alu_cout, alu_out} = alu_op1 & ~alu_op2;
+		  OPD_MVN: {alu_cout, alu_out} = ~alu_op2;
+	  endcase
   end
 
 endmodule

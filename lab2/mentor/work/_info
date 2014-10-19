@@ -1,0 +1,160 @@
+m255
+K3
+13
+cModel Technology
+d/home/tong
+varm_alu
+Z0 Mx1 6 sv_std 3 std
+Z1 DXx6 sv_std 3 std 0 22 WnQ=;W1X^o9K1PIQTgInR3
+InNj08K5`i33:`j]4aQn6;1
+Vz0JMTKSV3>=7UOnFIhV^81
+S1
+Z2 d/home/tong/myProject/SingleCycleARM/lab2/mentor
+Z3 w1413733631
+Z4 8/home/tong/myProject/SingleCycleARM/lab2/src/arm_core.sv
+Z5 F/home/tong/myProject/SingleCycleARM/lab2/src/arm_core.sv
+L0 243
+Z6 OL;L;6.5f;42
+r1
+31
+Z7 !s102 -nocovercells
+Z8 o-work work -sv -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+Z9 !s92 -work work -sv +incdir+/home/tong/myProject/SingleCycleARM/lab2/src -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+!s100 zN<9LJ7iX[g_2Y:`zZX1D2
+!s85 0
+varm_core
+Z10 Mx1 6 sv_std 3 std
+R1
+IKi49T8>m@G=e2z_WTaFLX2
+VP8>gb?ZHL`hJ]6PeYLo173
+S1
+R2
+R3
+R4
+R5
+L0 58
+R6
+r1
+31
+R7
+R8
+R9
+!s100 Dz5:ccj]@781aEIk3l7ag1
+!s85 0
+varm_decode
+R10
+R1
+!s100 BJCHVeV;LTTJ]Dn^1@dR?2
+InMPW9N>^MIh8X6V_6_mnA1
+V^IDG09Sak;ZVI2>kTn4T21
+S1
+R2
+Z11 w1390516756
+8/home/tong/myProject/SingleCycleARM/lab2/src/arm_decode.sv
+F/home/tong/myProject/SingleCycleARM/lab2/src/arm_decode.sv
+L0 49
+R6
+r1
+!s85 0
+31
+R7
+R8
+R9
+varm_mac
+R10
+R1
+IL0JJF_MPX^Wo@?EcCbfJm2
+VJ4jlnW<nP0N3fQO6lBV2S1
+S1
+R2
+R3
+R4
+R5
+L0 266
+R6
+r1
+31
+R7
+R8
+R9
+!s100 c1>D7mib3Z5ni<UEfNn_B2
+!s85 0
+varm_mem
+IKJ_:>WPfGnMUVJ;I]I@3R1
+V6gM;OHhchlhkBBLm<ec4N1
+R2
+R11
+8/home/tong/myProject/SingleCycleARM/lab2/447src/arm_mem.v
+F/home/tong/myProject/SingleCycleARM/lab2/447src/arm_mem.v
+L0 72
+R6
+r1
+31
+Z12 o-work work -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+R7
+!s100 7iZDz_FIbOh;Y`jM_b2PZ2
+!s85 0
+vclock
+IjlIHPC`mgW6L0GG6f3@Li0
+Vi`olYVWkN<8RH3LWH<QFk3
+R2
+R11
+Z13 8/home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v
+Z14 F/home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v
+L0 92
+R6
+r1
+31
+R7
+R12
+!s100 =VGDPS_aDNn2X_P6mJz3Z0
+!s85 0
+vregfile
+IKbgVA4lF]<3]D2@bAnmH61
+V3ZYR1AhCB`2<hBgO;NX9L0
+R2
+R11
+8/home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v
+F/home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v
+L0 34
+R6
+r1
+31
+R7
+R12
+!s100 `h`O@z<Id@YQoCa]:OOeS1
+!s85 0
+vregister
+R10
+R1
+IdE]<3QG^Pb8TdKQ]>EW=80
+V=OJ_nzf;g;Q6kgBMn[ZCd1
+S1
+R2
+R3
+R4
+R5
+L0 288
+R6
+r1
+31
+R7
+R8
+R9
+!s100 gEGEG1h4mXm4?MeP<2Ghb3
+!s85 0
+vtestbench
+IM0Z0PocDL9ZjeXzSHSV9S1
+VhGfW:390DM[oDMzegDH9`2
+R2
+R11
+R13
+R14
+L0 41
+R6
+r1
+31
+R7
+R12
+!s100 iL=V_Rn6B:BMU<GPf[SfY1
+!s85 0
