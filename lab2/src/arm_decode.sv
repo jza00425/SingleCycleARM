@@ -62,13 +62,19 @@ module arm_decode
 
   // A rather boring decoder right now
   always_comb begin
-    alu_sel = 4'h0;
+    alu_sel = inst[24:21];
     swi = 0;
     reg_we = 0;
     cpsr_mask = 4'b0000;
 
     if (inst[27:24] == 4'b1111)
       swi = 1;
+
+    case(alu_sel)
+	    OPD_TST, OPD_TEQ, OPD_CMP, OPD_CMN: reg_we = 0;
+	    default: reg_we = 1;
+    endcase
+    cpsr_mask = (inst[20] == 1'b1) ? 4'b1111 : 4'b0000;
   end
 
 endmodule
