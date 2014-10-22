@@ -118,17 +118,17 @@ module arm_core (
   always_comb begin
 	  if (!exc_en) begin
 		  rd_we = 1'b0;
-		  pc_we = 1'b0;
+		  pc_we = 1'b1;
 		  cpsr_we = 1'b0;
 		  rn_num = 0;
 		  rm_num = 0;
 		  rs_num = 0;
 		  rd_num = 0;
 		  rd_data = 0;
-		  pc_in = 0;
+		  pc_in = pc_out + 4;
 		  cpsr_in = 0;
 		  halted = 1'b0
-	  end else if (swi) begin
+	  end else if (swi) begin	//SWI
 		  rd_we = 1'b0;
 		  pc_we = 1'b0;
 		  cpsr_we = 1'b0;
@@ -140,25 +140,28 @@ module arm_core (
 		  pc_in = 0;
 		  cpsr_in = 0;
 		  halted = 1'b1
-	  end else if (inst[27:25] == 3'b101) begin
+	  end else if (inst[27:25] == 3'b101) begin	//BRANCH
 		  pc_we = 1'b1;
 		  cpsr_we = 1'b0;
 		  rn_num = 0;
 		  rm_num = 0;
 		  rs_num = 0;
-		  pc_in = (inst[22] == 1'b1) ? {8'hff, inst[23:0] << 2} : {8'h00, inst[23:0] << 2};
+		  pc_in = (inst[22] == 1'b1) ? pc_out + 4 + {8'hff, inst[23:0] << 2} : 
+			  		       pc_out + 4 + {8'h00, inst[23:0] << 2};
 		  cpsr_in = 0;
 		  halted = 1'b0;
-		  if (inst[24] = 1'b0) begin
+		  if (inst[24] = 1'b0) begin	//B
 			  rd_we = 1'b0;
 			  rd_num = 0;
 			  rd_data = 0;
-		  end else begin
+		  end else begin		//BL
 			  rd_we = 1'b1;
 			  rd_num = `R_LR;
-			  rd_data = inst;
+			  rd_data = pc + 4;
 		  end
-	  end else if
+	  end else if (inst[27:26] == 2'b01) begin
+		  if (inst[20] = 1'b1) begin	//LOAD
+
 		  
 			  
 
