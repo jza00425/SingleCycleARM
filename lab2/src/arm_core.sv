@@ -77,6 +77,14 @@ module arm_core (
   // assign        mem_data_in = mem_data_out;
   // assign        mem_write_en = 4'b0;
 
+  logic [3:0]	rn_num, rm_num, rs_num, rd_num;
+  logic [31:0]	rd_data, pc_in, cpsr_in;
+  logic 	rd_we, pc_we, cpsr_we;
+  wire [31:0]	rn_data, rm_data, rs_data, pc_out, cpsr_out;
+
+  logic		exc_en;
+  wire [3:0] 	cond;
+  
   wire [3:0]    dcd_rn, dcd_rd, dcd_rm;
   wire [3:0]    dcd_mul_rn, dcd_mul_rd, dcd_mul_rs;
 
@@ -90,6 +98,91 @@ module arm_core (
   wire [11:0]   dcd_sdt_offset;
   wire [23:0]   dcd_br_offset;
   wire [23:0]   dcd_swi_offset;
+
+  /*
+   * according to condition field, get if the instruction 
+   * will be executed.
+   */
+  always_comb begin
+	 case (cond)
+		 `CON_EQ: exc_en = cpsr_out[30] ? 1 : 0;
+		 `CON_NE: exc_en = cpsr_out[30] ? 0 : 1;
+	         `CON_GE: exc_en = (cpsr_out[31] == cpsr_out[28]) ? 1 : 0;
+		 `CON_LT: exc_en = (cpsr_out[31] != cpsr_out[28]) ? 1 : 0;
+		 `CON_GT: exc_en = (cpsr_out[30] && (cpsr_out[31] == cpsr_out[28])) ? 1 : 0;
+		 `CON_LE: exc_en = (cpsr_out[30] || (cpsr_out[31] != cpsr_out[28])) ? 1 : 0;
+		 default: exc_en = 1;
+	 endcase
+  end
+
+  always_comb begin
+	  if (!exc_en) begin
+		  rd_we = 1'b0;
+		  pc_we = 1'b0;
+		  cpsr_we = 1'b0;
+		  rn_num = 0;
+		  rm_num = 0;
+		  rs_num = 0;
+		  rd_num = 0;
+		  rd_data = 0;
+		  pc_in = 0;
+		  cpsr_in = 0;
+		  halted = 1'b0
+	  end else if (swi) begin
+		  rd_we = 1'b0;
+		  pc_we = 1'b0;
+		  cpsr_we = 1'b0;
+		  rn_num = 0;
+		  rm_num = 0;
+		  rs_num = 0;
+		  rd_num = 0;
+		  rd_data = 0;
+		  pc_in = 0;
+		  cpsr_in = 0;
+		  halted = 1'b1
+	  end else if (inst[27:25] == 3'b101) begin
+		  pc_we = 1'b1;
+		  cpsr_we = 1'b0;
+		  rn_num = 0;
+		  rm_num = 0;
+		  rs_num = 0;
+		  pc_in = (inst[22] == 1'b1) ? {8'hff, inst[23:0] << 2} : {8'h00, inst[23:0] << 2};
+		  cpsr_in = 0;
+		  halted = 1'b0;
+		  if (inst[24] = 1'b0) begin
+			  rd_we = 1'b0;
+			  rd_num = 0;
+			  rd_data = 0;
+		  end else begin
+			  rd_we = 1'b1;
+			  rd_num = `R_LR;
+			  rd_data = inst;
+		  end
+	  end else if
+		  
+			  
+
+
+
+  always_comb begin
+	 if ((!exc_en) ||
+	     (!swi) || 
+	     (inst[27:25] == 3'b101) ||		//Branch
+	     ((inst[27:26] == 2'b01) && (inst[20] == 1'b0)) ||	//STORE
+	     ((inst[27:26] == 2'b0) && 		//DATA PROCESSING
+	      ((inst[24:21] == `OPD_TST) || (inst[24:21] == `OPD_TEQ) || (inst[24:21] == `OPD_CMP) || (inst[24:21] == `OPD_CMN)))
+     	    )
+		 rd_we = 1'b0;
+	 else
+		 rd_we = 1'b1;
+  end
+
+  always_comb begin
+	  if (rd_we) begin
+		  if (inst[27:26] == 2'b01 && (
+
+		 
+
 
   assign        dcd_rn = inst[19:16];
   assign        dcd_rd = inst[15:12];
