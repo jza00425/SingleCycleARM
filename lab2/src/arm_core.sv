@@ -120,11 +120,11 @@ module arm_core (
 		  rd_we = 1'b0;
 		  pc_we = 1'b1;
 		  cpsr_we = 1'b0;
-		  rn_num = 0;
-		  rm_num = 0;
-		  rs_num = 0;
-		  rd_num = 0;
-		  rd_data = 0;
+		  rn_num = 'x;
+		  rm_num = 'x;
+		  rs_num = 'x;
+		  rd_num = 'x;
+		  rd_data = 'x;
 		  pc_in = pc_out + 4;
 		  cpsr_in = 0;
 		  halted = 1'b0
@@ -161,6 +161,12 @@ module arm_core (
 		  end
 	  end else if (inst[27:26] == 2'b01) begin
 		  if (inst[20] = 1'b1) begin	//LOAD
+			  rd_we = 1'b1;
+			  pc_we = 1'b1;
+			  cpsr_we = 1'b0;
+			  rn_num = inst[19:16];
+			  rm_num = 0;
+			  rs_num = 0;
 
 		  
 			  
