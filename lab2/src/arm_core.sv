@@ -71,6 +71,54 @@ module arm_core (
   output [3:0]  mem_write_en;
   output        halted;
 
+  wire rd_we, pc_we, cpsr_we, rn_sel;
+  wire is_imm, is_alu_for_mem_addr, ld_byte_or_word, alu_or_mac;
+  wire [1:0] rd_sel, rd_data_sel, pc_in_sel;
+
+  wire [3:0] rn_num, rm_num, rs_num, rd_num;
+  logic [31:0] rd_data;
+  wire [31:0] alu_out;
+  wire [31:0] mac_out;
+  wire [31:0] pc_out;
+  wire [31:0] pc_in;
+  wire [31:0] branch_addr;
+  wire [31:0] data_result;
+/***** not sure if branch_addr should pc + 8 or pc + 4*****/
+  assign branch_addr = pc + 8 + ((inst[21] == 1) ? {8'hff, inst[21:0}, 2'b00} : {8'h00, inst[21:0], 2'b00});
+
+  assign inst_addr = pc_out[31:2];
+
+  assign rn_num = (rn_sel) ? dcd_rn : dcd_mul_rn;
+  assign rm_num = inst[3:0];
+  assign rs_num = inst[11:8];
+  assign rd_num = (rd_sel == 2) ? `R_LR : ((rd_sel == 1) ? dcd_rd : dcd_mul_rd);
+  assign pc_in = (pc_in_sel == 2) ? pc_out : ((pc_in_sel == 1) ? (pc_out + 4) : branch_addr);
+  assign data_result = (alu_or_mac) ? alu_out : mac_out;
+  always_comb begin
+	  if(rd_data_sel == 2) begin
+		  rd_data = (ld_byte_or_word) ? {24'b0, mem_data_out[7:0]} : mem_data_out;
+	  end else begin
+		  rd_data = (rd_data_sel == 1) ? data_result : (pc + 4);
+	  end
+  end
+
+  arm_control ctrl(
+	  .inst(inst),
+	  .rd_we(rd_we),
+	  .pc_we(pc_we),
+	  .cpsr_we(cpsr_we),
+	  .rn_sel(rn_sel),
+	  .rd_sel(rd_sel),
+	  .rd_data_sel(rd_data_sel),
+	  .pc_in_sel(pc_in_sel),
+	  .halted(halted),
+	  .is_imm(is_imm),
+	  .mem_write_en(mem_write_en),
+	  .ld_byte_or_word(ld_byte_or_word),
+	  .alu_or_mac(alu_or_mac),
+	  .is_alu_for_mem_addr(is_alu_for_mem_addr)
+  };
+
   // Forced interface signals -- required for synthesis to work OK.
   // This is probably not what you want!
   // assign        mem_addr = 0;
@@ -99,103 +147,8 @@ module arm_core (
   wire [23:0]   dcd_br_offset;
   wire [23:0]   dcd_swi_offset;
 
-  /*
-   * according to condition field, get if the instruction 
-   * will be executed.
-   */
-  always_comb begin
-	 case (cond)
-		 `CON_EQ: exc_en = cpsr_out[30] ? 1 : 0;
-		 `CON_NE: exc_en = cpsr_out[30] ? 0 : 1;
-	         `CON_GE: exc_en = (cpsr_out[31] == cpsr_out[28]) ? 1 : 0;
-		 `CON_LT: exc_en = (cpsr_out[31] != cpsr_out[28]) ? 1 : 0;
-		 `CON_GT: exc_en = (cpsr_out[30] && (cpsr_out[31] == cpsr_out[28])) ? 1 : 0;
-		 `CON_LE: exc_en = (cpsr_out[30] || (cpsr_out[31] != cpsr_out[28])) ? 1 : 0;
-		 default: exc_en = 1;
-	 endcase
-  end
-
-  always_comb begin
-	  if (!exc_en) begin
-		  rd_we = 1'b0;
-		  pc_we = 1'b1;
-		  cpsr_we = 1'b0;
-		  rn_num = 'x;
-		  rm_num = 'x;
-		  rs_num = 'x;
-		  rd_num = 'x;
-		  rd_data = 'x;
-		  pc_in = pc_out + 4;
-		  cpsr_in = 0;
-		  halted = 1'b0
-	  end else if (swi) begin	//SWI
-		  rd_we = 1'b0;
-		  pc_we = 1'b0;
-		  cpsr_we = 1'b0;
-		  rn_num = 0;
-		  rm_num = 0;
-		  rs_num = 0;
-		  rd_num = 0;
-		  rd_data = 0;
-		  pc_in = 0;
-		  cpsr_in = 0;
-		  halted = 1'b1
-	  end else if (inst[27:25] == 3'b101) begin	//BRANCH
-		  pc_we = 1'b1;
-		  cpsr_we = 1'b0;
-		  rn_num = 0;
-		  rm_num = 0;
-		  rs_num = 0;
-		  pc_in = (inst[22] == 1'b1) ? pc_out + 4 + {8'hff, inst[23:0] << 2} : 
-			  		       pc_out + 4 + {8'h00, inst[23:0] << 2};
-		  cpsr_in = 0;
-		  halted = 1'b0;
-		  if (inst[24] = 1'b0) begin	//B
-			  rd_we = 1'b0;
-			  rd_num = 0;
-			  rd_data = 0;
-		  end else begin		//BL
-			  rd_we = 1'b1;
-			  rd_num = `R_LR;
-			  rd_data = pc + 4;
-		  end
-	  end else if (inst[27:26] == 2'b01) begin
-		  if (inst[20] = 1'b1) begin	//LOAD
-			  rd_we = 1'b1;
-			  pc_we = 1'b1;
-			  cpsr_we = 1'b0;
-			  rn_num = inst[19:16];
-			  rm_num = 0;
-			  rs_num = 0;
-
-		  
-			  
-
-
-
-  always_comb begin
-	 if ((!exc_en) ||
-	     (!swi) || 
-	     (inst[27:25] == 3'b101) ||		//Branch
-	     ((inst[27:26] == 2'b01) && (inst[20] == 1'b0)) ||	//STORE
-	     ((inst[27:26] == 2'b0) && 		//DATA PROCESSING
-	      ((inst[24:21] == `OPD_TST) || (inst[24:21] == `OPD_TEQ) || (inst[24:21] == `OPD_CMP) || (inst[24:21] == `OPD_CMN)))
-     	    )
-		 rd_we = 1'b0;
-	 else
-		 rd_we = 1'b1;
-  end
-
-  always_comb begin
-	  if (rd_we) begin
-		  if (inst[27:26] == 2'b01 && (
-
-		 
-
-
   assign        dcd_rn = inst[19:16];
   assign        dcd_rd = inst[15:12];
-  assign        dcd_rm = inst[3:0];
 
   // Multiply reverses rd/rn
   assign        dcd_mul_rd = inst[19:16];
