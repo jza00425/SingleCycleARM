@@ -71,18 +71,30 @@ module arm_core (
   output [3:0]  mem_write_en;
   output        halted;
 
-  wire rd_we, pc_we, cpsr_we, rn_sel;
-  wire is_imm, is_alu_for_mem_addr, ld_byte_or_word, alu_or_mac;
+  wire rd_we, pc_we, cpsr_we, rn_sel, reg_we, dcd_swi;
+  wire is_imm, is_alu_for_mem_addr, ld_byte_or_word, alu_or_mac, up_down, mac_sel;
   wire [1:0] rd_sel, rd_data_sel, pc_in_sel;
 
   wire [3:0] rn_num, rm_num, rs_num, rd_num;
   logic [31:0] rd_data;
+  logic [31:0] cpsr_in;		//need more work
   wire [31:0] alu_out;
   wire [31:0] mac_out;
   wire [31:0] pc_out;
   wire [31:0] pc_in;
   wire [31:0] branch_addr;
   wire [31:0] data_result;
+  wire [31:1] rn_data, rm_data, rs_data, cpsr_out, operand2;
+  wire potential_cout;
+  wire [4:0] word_offset;
+  wire [31:0] modified_mem_data_out;
+  wire [63:0] for_modified_mem_data_out; 
+  wire [3:0] alu_cpsr;
+  wire [3:0] alu_sel;
+  wire [3:0] mac_cpsr;
+  wire [3:0] alu_cpsr_mask;
+  wire [3:0] tmp_cpsr;
+
 /***** not sure if branch_addr should pc + 8 or pc + 4*****/
   assign branch_addr = pc + 8 + ((inst[21] == 1) ? {8'hff, inst[21:0}, 2'b00} : {8'h00, inst[21:0], 2'b00});
 
@@ -94,16 +106,46 @@ module arm_core (
   assign rd_num = (rd_sel == 2) ? `R_LR : ((rd_sel == 1) ? dcd_rd : dcd_mul_rd);
   assign pc_in = (pc_in_sel == 2) ? pc_out : ((pc_in_sel == 1) ? (pc_out + 4) : branch_addr);
   assign data_result = (alu_or_mac) ? alu_out : mac_out;
+  assign mem_addr = alu_out >> 2;
+  assign word_offset = {3'b0, alu_out[1:0]} << 3; 
+  assign for_modified_mem_data_out = {2{mem_data_out}};
+  assign modified_mem_data_out = for_modified_mem_data_out[word_offset + 31 -: 32];
+  assign final_cpsr_mask = (alu_or_mac) ? alu_cpsr_mask : 4'b1100;
+  assign tmp_cpsr = (alu_or_mac) ? alu_cpsr : mac_cpsr; 
+  assign cpsr_in = ({~final_cpsr_mask, 28'hfffffff} & cpsr_out) | {(final_cpsr_mask & tmp_cpsr), 28'h0};
+
   always_comb begin
 	  if(rd_data_sel == 2) begin
-		  rd_data = (ld_byte_or_word) ? {24'b0, mem_data_out[7:0]} : mem_data_out;
+		  rd_data = (ld_byte_or_word) ? {24'b0, modified_mem_data_out[7:0]} : modified_mem_data_out;
 	  end else begin
 		  rd_data = (rd_data_sel == 1) ? data_result : (pc + 4);
 	  end
   end
 
+  arm_alu my_alu(
+	  .alu_out(alu_out), 
+	  .alu_cpsr(alu_cpsr), 
+	  .alu_op1(rn_data), 
+	  .alu_op2(operand2), 
+	  .alu_sel(alu_sel),
+	  .alu_cin(cpsr_out[29]),
+	  .is_alu_for_mem_addr(is_alu_for_mem_addr), 
+	  .up_down(up_down),
+	  .potential_cout(potential_cout)
+  );
+
+  arm_decode decoder(
+	  .reg_we(reg_we),
+	  .cpsr_mask(alu_cpsr_mask),
+	  .alu_sel(alu_sel),
+	  .swi(dcd_swi),
+	  .inst(inst)
+  };
+
+
   arm_control ctrl(
 	  .inst(inst),
+	  .reg_we(reg_we),
 	  .rd_we(rd_we),
 	  .pc_we(pc_we),
 	  .cpsr_we(cpsr_we),
@@ -116,22 +158,50 @@ module arm_core (
 	  .mem_write_en(mem_write_en),
 	  .ld_byte_or_word(ld_byte_or_word),
 	  .alu_or_mac(alu_or_mac),
+	  .up_down(up_down),
+	  .mac_sel(mac_sel),
 	  .is_alu_for_mem_addr(is_alu_for_mem_addr)
   };
 
-  // Forced interface signals -- required for synthesis to work OK.
-  // This is probably not what you want!
-  // assign        mem_addr = 0;
-  // assign        mem_data_in = mem_data_out;
-  // assign        mem_write_en = 4'b0;
+  arm_mac my_mac(
+	  .mac_out(mac_out), 
+	  .mac_cpsr(mac_cpsr),
+	  .mac_op1(rm_data), 
+	  .mac_op2(rs_data), 
+	  .mac_acc(rn_data), 
+	  .mac_sel(mac_sel)
+  );
 
-  logic [3:0]	rn_num, rm_num, rs_num, rd_num;
-  logic [31:0]	rd_data, pc_in, cpsr_in;
-  logic 	rd_we, pc_we, cpsr_we;
-  wire [31:0]	rn_data, rm_data, rs_data, pc_out, cpsr_out;
+  regfile register(
+	  .rn_data(rn_data),
+	  .rm_data(rm_data),
+	  .rs_data(rs_data),
+	  .pc_out(pc_out),
+	  .cpsr_out(cpsr_out),
+	  .rn_num(rn_num),
+	  .rm_num(rm_num),
+	  .rs_num(rs_num),
+	  .rd_num(rd_num),
+	  .rd_data(rd_num),
+	  .rd_we(rd_we),
+	  .pc_in(pc_in),
+	  .pc_we(pc_we),
+	  .cpsr_in(cpsr_in),
+	  .cpsr_we(cpsr_we),
+	  .clk(clk),
+	  .rst_b(rst_b),
+	  .halted(halted)
+  );
 
-  logic		exc_en;
-  wire [3:0] 	cond;
+  arm_barrel_shift shifter(
+	  .inst(inst),
+	  .rm_data_in(rm_data),
+	  .rs_data_in(rs_data),
+	  .cpsr(cpsr_out),
+	  .is_imm(is_imm),
+	  .operand2(operand2),
+	  .potential_cout(potential_cout)
+  );
   
   wire [3:0]    dcd_rn, dcd_rd, dcd_rm;
   wire [3:0]    dcd_mul_rn, dcd_mul_rd, dcd_mul_rs;
@@ -166,11 +236,6 @@ module arm_core (
   assign        dcd_br_offset = inst[23:0];
   assign        dcd_swi_offset = inst[23:0];
 
-  wire [31:0] pc;
-
-  // You probably want to connect this to the register file
-  assign pc = 32'h00400000;
-  assign inst_addr = pc;
 
   // synthesis translate_off
   //synopsys translate_off
@@ -184,50 +249,6 @@ module arm_core (
   end
   //synopsys translate_on
   // synthesis translate_on
-
-  wire [3:0]		alu_sel;		// From Decoder of arm_decode.v
-  wire          reg_we;
-  wire [3:0]    cpsr_mask;
-  wire          dcd_swi;
-
-
-  // Generate control signals
-  arm_decode Decoder
-  (
-	  // Outputs
-    .reg_we(reg_we),
-    .cpsr_mask(cpsr_mask),
-		.alu_sel(alu_sel),
-    .swi(dcd_swi),
-		// Inputs
-    .inst(inst)
-  );
-
-  // Register File
-  // Instantiate the register file from reg_file.v here.
-  // Don't forget to hookup the "halted" signal to trigger the register dump
-  regfile register_file(
-	  .rn_data(),
-	  .rm_data(),
-	  .rs_data(),
-	  .pc_out(),
-	  .cpsr_out(),
-	  .rn_num(),
-	  .rm_num(),
-	  .rs_num(),
-	  .rd_num(),
-	  .rd_data(),
-	  .rd_we(reg_we),
-	  .pc_in(),
-	  .pc_we(),
-	  .cpsr_in(),
-	  .cpsr_we(),
-	  .clk(clk),
-	  .rst_b(rst_b),
-	  .halted(halted)
-  );
-
-
 
   // // synthesis translate_off
   // //synopsys translate_off
@@ -246,32 +267,6 @@ module arm_core (
   // end
   // //synopsys translate_on
   // // synthesis translate_on
-
-  wire [31:0] alu_out;
-  wire        alu_cout;
-
-  // Execute
-  arm_alu alu
-  (
-    .alu_out(alu_out),
-    .alu_cout(alu_cout),
-    .alu_op1(32'h1),
-    .alu_op2(32'h0),
-    .alu_cin(1'h0),
-    .alu_sel(alu_sel)
-  );
-
-  wire [31:0] mac_out;
-
-  // Multiply Accumulator
-  arm_mac mac
-  (
-    .mac_out(mac_out),
-    .mac_op1(32'hcafe),
-    .mac_op2(32'h1ace),
-    .mac_acc(32'h1acc),
-    .mac_sel(1'h0)
-  );
 
 
   wire          syscall_halt, internal_halt;
@@ -295,35 +290,89 @@ endmodule // arm_core
 //// alu_sel  (input)  - Selects which operation is to be performed
 //// alu_cin  (input)  - Carry in
 ////
-module arm_alu(alu_out, alu_cout, alu_op1, alu_op2, alu_sel, alu_cin);
+module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for_mem_addri, up_down, potential_cout);
 
-  output reg  [31:0]  alu_out;
-  output reg          alu_cout;
+  output      [31:0]  alu_out;
+  output      [3:0]  alu_cpsr;
   input       [31:0]  alu_op1, alu_op2;
   input       [3:0]   alu_sel;
   input               alu_cin;
+  input		      is_alu_for_mem_addr;
+  input 	      up_down;
+  input 	      potential_cout;
+
+  logic [31:0] result;
+  logic cout;
+  logic n_flag, z_flag, c_flag, v_flag;
 
   assign carry_in = {31'd0, alu_cin};
+  assign alu_out = result;
+  assign alu_cpsr = {n_flag, z_flag, c_flag, v_flag};
 
   always_comb begin
-	  case(alu_sel)
-		  OPD_AND: {alu_cout, alu_out} = alu_op1 & alu_op2;
-		  OPD_EOR: {alu_cout, alu_out} = alu_op1 ^ alu_op2;
-		  OPD_SUB: integer'{{alu_cout, alu_out}} = integer'(alu_op1) - integer'(alu_op2);
-		  OPD_RSB: integer'{{alu_cout, alu_out}} = integer'(alu_op2) - integer'(alu_op1);
-		  OPD_ADD: integer'{{alu_cout, alu_out}} = integer'(alu_op1) + integer'(alu_op2);
-		  OPD_ADC: integer'{{alu_cout, alu_out}} = integer'(alu_op1) + integer'(alu_op2) + integer'(carry_in);
-		  OPD_SBC: integer'{{alu_cout, alu_out}} = integer'(alu_op1) - integer'(alu_op2) + integer'(carry_in) - 1;
-		  OPD_RSC: integer'{{alu_cout, alu_out}} = integer'(alu_op2) - integer'(alu_op1) + integer'(carry_in) - 1;
-		  OPD_TST: {alu_cout, alu_out} = alu_op1 & alu_op2;
-		  OPD_TEQ: {alu_cout, alu_out} = alu_op1 ^ alu_op2;
-		  OPD_CMP: integer'{{alu_cout, alu_out}} = integer'(alu_op1) - integer'(alu_op2);
-		  OPD_CMN: integer'{{alu_cout, alu_out}} = integer'(alu_op1) + integer'(alu_op2);
-		  OPD_ORR: {alu_cout, alu_out} = alu_op1 | alu_op2;
-		  OPD_MOV: {alu_cout, alu_out} = alu_op2;
-		  OPD_BIC: {alu_cout, alu_out} = alu_op1 & ~alu_op2;
-		  OPD_MVN: {alu_cout, alu_out} = ~alu_op2;
-	  endcase
+	  if (is_alu_for_mem_addr == 1) begin
+		  alu_out = (up_down) ? (alu_op1 + alu_op2) : (alu_op1 - alu_op2);
+		  n_flag = 1'bx; z_flag = 1'bx; c_flag = 1'bx; v_flag = 1'bx;
+	  end else begin
+		  case(alu_sel)
+			  `OPD_AND: {cout, result} = alu_op1 & alu_op2;
+			  `OPD_EOR: {cout, result} = alu_op1 ^ alu_op2;
+			  `OPD_SUB: integer'{{cout, result}} = integer'(alu_op1) - integer'(alu_op2);
+			  `OPD_RSB: integer'{{cout, result}} = integer'(alu_op2) - integer'(alu_op1);
+			  `OPD_ADD: integer'{{cout, result}} = integer'(alu_op1) + integer'(alu_op2);
+			  `OPD_ADC: integer'{{cout, result}} = integer'(alu_op1) + integer'(alu_op2) + integer'(carry_in);
+			  `OPD_SBC: integer'{{cout, result}} = integer'(alu_op1) - integer'(alu_op2) + integer'(carry_in) - 1;
+			  `OPD_RSC: integer'{{cout, result}} = integer'(alu_op2) - integer'(alu_op1) + integer'(carry_in) - 1;
+			  `OPD_TST: {cout, result} = alu_op1 & alu_op2;
+			  `OPD_TEQ: {cout, result} = alu_op1 ^ alu_op2;
+			  `OPD_CMP: integer'{{cout, result}} = integer'(alu_op1) - integer'(alu_op2);
+			  `OPD_CMN: integer'{{cout, result}} = integer'(alu_op1) + integer'(alu_op2);
+			  `OPD_ORR: {cout, result} = alu_op1 | alu_op2;
+			  `OPD_MOV: {cout, result} = alu_op2;
+			  `OPD_BIC: {cout, result} = alu_op1 & ~alu_op2;
+			  `OPD_MVN: {cout, result} = ~alu_op2;
+		  endcase
+
+		  case(alu_sel)
+			  `OPD_AND, `OPD_EOR, `OPD_TST, `OPD_TEQ, `OPD_ORR, `OPD_MOV, `OPD_BIC, `OPD_MVN: begin
+				  n_flag = (result[31] == 1) ? 1 : 0;
+				  z_flag = (result == 32'b0) ? 1 : 0;
+				  c_flag = potential_cout;
+				  v_flag = 1'bx;
+			  end
+			  `OPD_SUB, `OPD_SBC, `OPD_CMP: begin
+				  n_flag = (result[31] == 1) ? 1 : 0;
+				  z_flag = (result == 32'b0) ? 1 : 0;
+				  c_flag = cout;
+				  if (((alu_op1[31] == 1) && (alu_op2[31] == 0) && (result[31] == 0)) ||
+				      ((alu_op1[31] == 0]) && (alu_op2[31] == 1) && (result[31] == 1)))
+				  	  v_flag = 1;
+				  else  
+					  v_flag = 0;
+			  end
+			  `OPD_RSB, `OPD_RSC: begin
+				  n_flag = (result[31] == 1) ? 1 : 0;
+				  z_flag = (result == 32'b0) ? 1 : 0;
+				  c_flag = cout;
+				  if (((alu_op1[31] == 1) && (alu_op2[31] == 0) && (result[31] == 1)) ||
+				      ((alu_op1[31] == 0]) && (alu_op2[31] == 1) && (result[31] == 0)))
+				  	  v_flag = 1;
+				  else  
+					  v_flag = 0;
+			  end
+			  // `OPD_ADD, `OPD_ADC, `OPD_CMN: begin
+			  default:
+				  n_flag = (result[31] == 1) ? 1 : 0;
+				  z_flag = (result == 32'b0) ? 1 : 0;
+				  c_flag = cout;
+				  if (((alu_op1[31] == 0) && (alu_op2[31] == 0) && (result[31] == 1)) ||
+				      ((alu_op1[31] == 1]) && (alu_op2[31] == 1) && (result[31] == 0)))
+				  	  v_flag = 1;
+				  else  
+					  v_flag = 0;
+			  end
+		  endcase
+	  end
   end
 
 endmodule
@@ -337,15 +386,29 @@ endmodule
 //// mac_acc  (input)  - Accumulator
 //// mac_sel  (input)  - Selects whether to accumulate
 ////
-module arm_mac(mac_out, mac_op1, mac_op2, mac_acc, mac_sel);
+module arm_mac(mac_out, mac_cpsr, mac_op1, mac_op2, mac_acc, mac_sel);
 
   output reg  [31:0]  mac_out;
+  output      [3:0]   mac_cpsr;
   input       [31:0]  mac_op1, mac_op2, mac_acc;
   input               mac_sel;
 
+  logic	      [31:0]  result;
+  logic	      [31:0]  high32;
+  logic		      n_flag, z_flag, v_flag, c_flag;
+
+  assign mac_out = result;
+  assign mac_cpsr = {n_flag, z_flag, v_flag, c_flag};
   always_comb begin
-    // I suspect there is something missing here
-    mac_out = mac_op1;
+	  if (mac_sel == 1'b1) begin
+		  {high32, result} = mac_op1 * mac_op2  + mac_acc;
+	  end else begin
+		  {high32, result} = mac_op1 * mac_op2;
+	  end
+	  n_flag = (result[31] == 1) ? 1 : 0;
+	  z_flag = (result == 0) ? 1 : 0;
+	  c_flag = 1'bx;
+	  v_flag = 1'bx;
   end
 
 endmodule

@@ -8,12 +8,12 @@ module arm_barrel_shift(
 	input [31:0] inst,
 	input [31:0] rm_data_in,
 	input [31:0] rs_data_in,
-	input [31:0] cpsr;
-	output logic [31:0] operand2
-	output logic potential_cout;
+	input [31:0] cpsr,
+	input is_imm,
+	output logic [31:0] operand2,
+	output logic potential_cout
 );
 
-wire is_imm;
 wire [7:0] dp_imm;
 wire [3:0] dp_rotate;
 wire [63:0] pre_rotate_imm;
@@ -22,7 +22,6 @@ wire [1:0] shift_type;
 wire [63:0] double_rm_data_in;
 wire [7:0] rs_byte;
 
-assign is_imm = (inst[25] == 1'b1) ? 1 : 0;
 assign dp_imm = inst[7:0];
 assign dp_rotate = inst[11:8];
 assign pre_rotate_imm = {2{24'b0, dp_imm}};

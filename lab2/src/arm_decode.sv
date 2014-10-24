@@ -74,7 +74,15 @@ module arm_decode
 	    OPD_TST, OPD_TEQ, OPD_CMP, OPD_CMN: reg_we = 0;
 	    default: reg_we = 1;
     endcase
-    cpsr_mask = (inst[20] == 1'b1) ? 4'b1111 : 4'b0000;
+    if (inst[20] == 1'b1) begin
+	    case (inst[27:24])
+		    `OPD_AND, `OPD_EOR, `OPD_TST, `OPD_TEQ, `OPD_ORR, `OPD_MOV, `OPD_BIC, `OPD_MVN: cpsr_mask = 4'b1110;
+		    default: cpsr_mask = 4'b1111;
+	    endcase
+    end else begin
+	    cpsr_mask = 4'b0000;
+    end
+
   end
 
 endmodule
