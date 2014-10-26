@@ -48,62 +48,62 @@ m=$g18-477 Makefile: $n
 ###################################################################
 
 default:
-	@echo -e "$mHELP SCREEN"
-	@echo -e ""
-	@echo -e "$bUSAGE:$n"
-	@echo -e "\tmake $uTARGET$n [$uVARIABLE$n]..."
-	@echo -e ""
-	@echo -e ""
-	@echo -e "$bTARGET:$n"
-	@echo -e "\t$bsim$n"
-	@echo -e "\t    compiles Verilog found in $usrc$n directory;"
-	@echo -e "\t    simulates Verilog using $bINPUT$n as input;"
-	@echo -e "\t    places all outputs (logs, waveforms, regdump, etc.) in $bOUTPUT$n"
-	@echo -e ""
-	@echo -e "\t$bverify$n"
-	@echo -e "\t    compiles Verilog found in $usrc$n directory;"
-	@echo -e "\t    simulates Verilog using $bINPUT$n as input;"
-	@echo -e "\t    places all outputs (logs, waveforms, regdump, etc.) in $bOUTPUT$n"
-	@echo -e "\t    verifies the simulation register-dump against the reference"
-	@echo -e ""
-	@echo -e "\t$bbatch-verify$n"
-	@echo -e "\t    similar to $bverify$n, but uses $bBATCH$n as input"
-	@echo -e ""
-	@echo -e "\t$bsynth$n"
-	@echo -e "\t    compiles Verilog found in $usrc$n directory;"
-	@echo -e "\t    synthesizes Verilog"
-	@echo -e "\t    places all outputs (reports, schematics, etc.) in $bOUTPUT$n"
-	@echo -e ""
-	@echo -e "\t$bauto$n"
-	@echo -e "\t    automatically \"wires\" up Verilog modules found in $usrc/*.v$n;"
-	@echo -e "\t    (not mandatory -- merely for your convenience)"
-	@echo -e ""
-	@echo -e ""
-	@echo -e "$bVARIABLE:$n"
-	@echo -e "\t$bINPUT$n=$uASSEMBLY$n"
-	@echo -e "\t    for $bsim$n and $bverify$n, specifies an input ARM assemply file;"
-	@echo -e "\t    if unspecified, defaults to $u447inputs/addiu.s$n"
-	@echo -e ""
-	@echo -e "\t$bBATCH$n=$uASSEMBLY FILES$n"
-	@echo -e "\t    for $bbatch-verify$n, specifies one or more input ARM assemply files;"
-	@echo -e "\t    if unspecified, defaults to $u447inputs/addiu.s$n"
-	@echo -e ""
-	@echo -e "\t$bOUTPUT$n=$uDIR$n"
-	@echo -e "\t    for all targets, specifies the output directory;"
-	@echo -e "\t    if unspecified, defaults to $uoutputs/current-timestamp$n;"
-	@echo -e ""
-	@echo -e ""
-	@echo -e "$bEXAMPLES:$n"
-	@echo -e "\tmake sim"
-	@echo -e "\tmake sim INPUT=inputs/mytest.s OUTPUT=outputs/myoutput"
-	@echo -e "\tmake verify"
-	@echo -e "\tmake verify INPUT=inputs/mytest.s OUTPUT=outputs/myoutput"
-	@echo -e "\tmake batch-verify BATCH=447inputs/*.s"
-	@echo -e "\tmake batch-verify BATCH=447inputs/*.s OUTPUT=outputs/myoutput"
-	@echo -e "\tmake synth"
-	@echo -e "\tmake synth OUTPUT=outputs/myoutput"
-	@echo -e ""
-	@echo -e "(END)"
+	@echo  "HELP SCREEN"
+	@echo  ""
+	@echo  "USAGE:"
+	@echo  "\tmake TARGET [VARIABLE]..."
+	@echo  ""
+	@echo  ""
+	@echo  "TARGET:"
+	@echo  "\tsim"
+	@echo  "\t    compiles Verilog found in src directory;"
+	@echo  "\t    simulates Verilog using INPUT as input;"
+	@echo  "\t    places all outputs (logs, waveforms, regdump, etc.) in OUTPUT"
+	@echo  ""
+	@echo  "\tverify"
+	@echo  "\t    compiles Verilog found in src directory;"
+	@echo  "\t    simulates Verilog using INPUT as input;"
+	@echo  "\t    places all outputs (logs, waveforms, regdump, etc.) in OUTPUT"
+	@echo  "\t    verifies the simulation register-dump against the reference"
+	@echo  ""
+	@echo  "\tbatch-verify"
+	@echo  "\t    similar to verify, but uses BATCH as input"
+	@echo  ""
+	@echo  "\tsynth"
+	@echo  "\t    compiles Verilog found in src directory;"
+	@echo  "\t    synthesizes Verilog"
+	@echo  "\t    places all outputs (reports, schematics, etc.) in OUTPUT"
+	@echo  ""
+	@echo  "\tauto"
+	@echo  "\t    automatically \"wires\" up Verilog modules found in src/*.v;"
+	@echo  "\t    (not mandatory -- merely for your convenience)"
+	@echo  ""
+	@echo  ""
+	@echo  "VARIABLE:"
+	@echo  "\tINPUT=ASSEMBLY"
+	@echo  "\t    for sim and verify, specifies an input ARM assemply file;"
+	@echo  "\t    if unspecified, defaults to 447inputs/addiu.s"
+	@echo  ""
+	@echo  "\tBATCH=ASSEMBLY FILES"
+	@echo  "\t    for batch-verify, specifies one or more input ARM assemply files;"
+	@echo  "\t    if unspecified, defaults to 447inputs/addiu.s"
+	@echo  ""
+	@echo  "\tOUTPUT=DIR"
+	@echo  "\t    for all targets, specifies the output directory;"
+	@echo  "\t    if unspecified, defaults to outputs/current-timestamp;"
+	@echo  ""
+	@echo  ""
+	@echo  "EXAMPLES:"
+	@echo  "\tmake sim"
+	@echo  "\tmake sim INPUT=inputs/mytest.s OUTPUT=outputs/myoutput"
+	@echo  "\tmake verify"
+	@echo  "\tmake verify INPUT=inputs/mytest.s OUTPUT=outputs/myoutput"
+	@echo  "\tmake batch-verify BATCH=447inputs/*.s"
+	@echo  "\tmake batch-verify BATCH=447inputs/*.s OUTPUT=outputs/myoutput"
+	@echo  "\tmake synth"
+	@echo  "\tmake synth OUTPUT=outputs/myoutput"
+	@echo  ""
+	@echo  "(END)"
 	@exit 0
 
 
@@ -112,17 +112,23 @@ default:
 ###################################################################
 
 compile:
-	@echo -e "$mCopying Verilog into $(OUTPUT)..."
+	@echo -e "Copying Verilog into $(OUTPUT)..."
 	@mkdir -p $(OUTPUT)/sim/src
 	@cp `find src 447src -iname '*.sv' -o -iname '*.v' -o -iname '*.vh'`	$(OUTPUT)/sim/src
-	@echo -e "$mCompiling Verilog..."
-	cd $(OUTPUT)/sim; ncvlog -sv -linedebug -messages -incdir src src/*.v src/*.sv
-	@if grep '*W' $(OUTPUT)/sim/ncvlog.log >/dev/null; \
-		then echo -e '$m$rCompiler log has warnings!$n'; fi
-	@echo -e "$mElaborating Verilog..."
-	cd $(OUTPUT)/sim; ncelab +access+rwc -messages worklib.$(TB)
-	@if grep '*W' $(OUTPUT)/sim/ncelab.log >/dev/null; \
-		then echo -e '$m$rElaborator log has warnings!$n'; fi
+	@echo -e "Compiling Verilog..."
+	cd $(OUTPUT)/sim
+	# $(shell source /mgc/Setup.bash)
+	vlib work
+	vmap work
+	vlog -sv -work work -novopt +incdir+./src -nocovercells ./src/*.sv
+	vlog +incdir+./src/ ./src/arm_mem.v
+	# ncvlog -sv -linedebug -messages -incdir src src/*.v src/*.sv
+	# @if grep '*W' $(OUTPUT)/sim/ncvlog.log >/dev/null; \
+		then echo -e 'Compiler log has warnings!'; fi
+	# @echo -e "Elaborating Verilog..."
+	# cd $(OUTPUT)/sim; ncelab +access+rwc -messages worklib.$(TB)
+	# @if grep '*W' $(OUTPUT)/sim/ncelab.log >/dev/null; \
+		then echo -e 'Elaborator log has warnings!'; fi
 
 
 ###################################################################
@@ -130,11 +136,11 @@ compile:
 ###################################################################
 
 assemble:
-	@echo -e "$mCopying $(INPUT) into $(OUTPUT)..."
+	@echo -e "Copying $(INPUT) into $(OUTPUT)..."
 	@mkdir -p $(OUTPUT)/sim
 	@([ -f $(INPUT) ] && cp $(INPUT) $(OUTPUT)/sim) || \
-		(echo -e "$mERROR -- test input not found: $(INPUT)"; exit 1)
-	@echo -e "$mAssemblying input in $(OUTPUT)..."
+		(echo -e "ERROR -- test input not found: $(INPUT)"; exit 1)
+	@echo -e "Assemblying input in $(OUTPUT)..."
 	arm2hex $(INPUT) $(OUTPUT)/sim/mem;
 
 

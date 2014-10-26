@@ -1,0 +1,392 @@
+# //  QuestaSim-64 6.5f Jun 16 2010 Linux 3.13.0-37-generic
+# //
+# //  Copyright 1991-2010 Mentor Graphics Corporation
+# //              All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND 
+# //  PROPRIETARY INFORMATION WHICH IS THE PROPERTY
+# //  OF MENTOR GRAPHICS CORPORATION OR ITS LICENSORS
+# //  AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Loading project SingleCycleArm
+# Compile of arm_barrel_shift.sv failed with 2 errors.
+# Compile of arm_control.sv failed with 2 errors.
+# Compile of arm_core.sv failed with 3 errors.
+# Compile of arm_decode.sv failed with 2 errors.
+# Compile of arm_mem.v was successful.
+# Compile of regfile.v was successful.
+# Compile of testbench.v was successful.
+# 7 compiles, 4 failed with 9 errors. 
+# Compile of arm_barrel_shift.sv was successful.
+# Compile of arm_control.sv was successful.
+# Compile of arm_core.sv was successful.
+# Compile of arm_decode.sv was successful.
+# Compile of arm_mem.v was successful.
+# Compile of regfile.v was successful.
+# Compile of testbench.v was successful.
+# 7 compiles, 0 failed with no errors. 
+vsim work.testbench
+# vsim work.testbench 
+# Loading work.testbench
+# Loading work.clock
+# Loading sv_std.std
+# Loading work.arm_core
+# Loading work.arm_alu
+# Loading work.arm_decode
+# Loading work.arm_control
+# Loading work.arm_mac
+# Loading work.regfile
+# Loading work.arm_barrel_shift
+# Loading work.register
+# Loading work.arm_mem
+run -all
+# ** Warning: (vsim-7) Failed to open readmem file "mem.data.dat" in read mode.
+# No such file or directory. (errno = ENOENT)    : /home/tong/myProject/SingleCycleARM/lab2/447src/arm_mem.v(221)
+#    Time: 0 fs  Iteration: 1  Instance: :testbench:Memory
+# ** Warning: (vsim-7) Failed to open readmem file "mem.stack.dat" in read mode.
+# No such file or directory. (errno = ENOENT)    : /home/tong/myProject/SingleCycleARM/lab2/447src/arm_mem.v(222)
+#    Time: 0 fs  Iteration: 1  Instance: :testbench:Memory
+# ** Warning: (vsim-7) Failed to open readmem file "mem.ktext.dat" in read mode.
+# No such file or directory. (errno = ENOENT)    : /home/tong/myProject/SingleCycleARM/lab2/447src/arm_mem.v(223)
+#    Time: 0 fs  Iteration: 1  Instance: :testbench:Memory
+# ** Warning: (vsim-7) Failed to open readmem file "mem.kdata.dat" in read mode.
+# No such file or directory. (errno = ENOENT)    : /home/tong/myProject/SingleCycleARM/lab2/447src/arm_mem.v(224)
+#    Time: 0 fs  Iteration: 1  Instance: :testbench:Memory
+# Break in Module regfile at /home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v line 55
+step -out
+# Break in Module regfile at /home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v line 55
+step -out
+step -out
+step -out
+step -over
+step -over
+step -over
+step -over
+step -over
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -over
+step -over
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -over
+step -over
+step -over
+step -over
+step -out
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -out
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -over
+step -out
+step -over
+step -over
+step -out
+step -out
+step -out
+step -out
+step -out
+step -over
+step -out
+step -out
+# Next activity is in 50 fs.
+step -out
+step -over
+step -over
+step -over
+step -over
+step -over
+step -out
+# Break in Module regfile at /home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v line 55
+step -out
+step -out
+step -out
+step -out
+step -out
+# Next activity is in 25 fs.
+step -out
+step -out
+step -out
+step -out
+# Next activity is in 25 fs.
+step -out
+step -out
+# Next activity is in 50 fs.
+step -out
+step -over
+step -over
+step -out
+# Break in Module regfile at /home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v line 55
+step -out
+step -out
+# === Simulation Cycle                  150 ===
+# [pc=00400000, inst=e3a010ff] [reset=0, halted=0]
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+# Next activity is in 50 fs.
+step -out
+# Next activity is in 50 fs.
+step -out
+step -out
+# Break in Module regfile at /home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v line 55
+step -out
+step -out
+# === Simulation Cycle                  250 ===
+# [pc=00400004, inst=e2812cff] [reset=0, halted=0]
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+step -out
+# Next activity is in 50 fs.
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+step -over
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module regfile at /home/tong/myProject/SingleCycleARM/lab2/447src/regfile.v line 55
+run -all
+# === Simulation Cycle                  350 ===
+# [pc=00400008, inst=e3a030ff] [reset=0, halted=0]
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# === Simulation Cycle                  450 ===
+# [pc=0040000c, inst=e0833403] [reset=0, halted=0]
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# === Simulation Cycle                  550 ===
+# [pc=00400010, inst=e1520003] [reset=0, halted=0]
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# === Simulation Cycle                  650 ===
+# [pc=00400014, inst=1a00000a] [reset=0, halted=0]
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# === Simulation Cycle                  750 ===
+# [pc=00400044, inst=e3a000bb] [reset=0, halted=0]
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101
+run -all
+# Break in Module clock at /home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v line 101

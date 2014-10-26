@@ -71,7 +71,7 @@ module arm_decode
       swi = 1;
 
     case(alu_sel)
-	    OPD_TST, OPD_TEQ, OPD_CMP, OPD_CMN: reg_we = 0;
+	    `OPD_TST, `OPD_TEQ, `OPD_CMP, `OPD_CMN: reg_we = 0;
 	    default: reg_we = 1;
     endcase
     if (inst[20] == 1'b1) begin

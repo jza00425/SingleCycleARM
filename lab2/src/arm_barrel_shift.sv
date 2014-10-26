@@ -1,8 +1,8 @@
 
 
 
-`include "arm_define.vh"
-`include "intern_define.vh"
+`include "arm_defines.vh"
+`include "internal_defines.vh"
 
 module arm_barrel_shift(
 	input [31:0] inst,
@@ -87,23 +87,23 @@ always_comb begin
 						operand2 = rm_data_in;
 					end
 				endcase
-			end else if (rs_bype > 32) begin
+			end else if (rs_byte > 32) begin
 				case (shift_type)
 					`OPS_SLL: begin
 						potential_cout = 0;
 						operand2 = 0;
 					end
 					`OPS_SLR: begin
-						potential_cout = 0
+						potential_cout = 0;
 						operand2 = 0;
 					end
 					`OPS_SAR: begin
 						potential_cout = rm_data_in[31];
 						operand2 = {32{rm_data_in[31]}};
 					end
-					`OPS_ROR begin
+					`OPS_ROR: begin
 						potential_cout = rm_data_in[rs_by_32 - 1];
-						operand2 = double_rm_data_in[31 + rs_by_32 -: 32]
+						operand2 = double_rm_data_in[31 + rs_by_32 -: 32];
 					end
 				endcase
 			end else begin
@@ -129,4 +129,4 @@ always_comb begin
 		end
 	end
 end
-
+endmodule

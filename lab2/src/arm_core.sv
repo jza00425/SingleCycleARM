@@ -84,7 +84,7 @@ module arm_core (
   wire [31:0] pc_in;
   wire [31:0] branch_addr;
   wire [31:0] data_result;
-  wire [31:1] rn_data, rm_data, rs_data, cpsr_out, operand2;
+  wire [31:0] rn_data, rm_data, rs_data, cpsr_out, operand2;
   wire potential_cout;
   wire [4:0] word_offset;
   wire [31:0] modified_mem_data_out;
@@ -95,8 +95,22 @@ module arm_core (
   wire [3:0] alu_cpsr_mask;
   wire [3:0] tmp_cpsr;
 
+  wire [3:0]    dcd_rn, dcd_rd, dcd_rm;
+  wire [3:0]    dcd_mul_rn, dcd_mul_rd, dcd_mul_rs;
+
+  wire [7:0]    dcd_dp_imm;
+  wire [3:0]    dcd_dp_rotate;
+
+  wire          dcd_shift_fmt;
+  wire [1:0]    dcd_shift_type;
+  wire [4:0]    dcd_shift_amt;
+  wire [3:0]    dcd_shift_rs;
+  wire [11:0]   dcd_sdt_offset;
+  wire [23:0]   dcd_br_offset;
+  wire [23:0]   dcd_swi_offset;
+
 /***** not sure if branch_addr should pc + 8 or pc + 4*****/
-  assign branch_addr = pc + 8 + ((inst[21] == 1) ? {8'hff, inst[21:0}, 2'b00} : {8'h00, inst[21:0], 2'b00});
+  assign branch_addr = pc_out + 8 + ((inst[21] == 1) ? {8'hff, inst[21:0], 2'b00} : {8'h00, inst[21:0], 2'b00});
 
   assign inst_addr = pc_out[31:2];
 
@@ -118,7 +132,7 @@ module arm_core (
 	  if(rd_data_sel == 2) begin
 		  rd_data = (ld_byte_or_word) ? {24'b0, modified_mem_data_out[7:0]} : modified_mem_data_out;
 	  end else begin
-		  rd_data = (rd_data_sel == 1) ? data_result : (pc + 4);
+		  rd_data = (rd_data_sel == 1) ? data_result : (pc_out + 4);
 	  end
   end
 
@@ -140,12 +154,13 @@ module arm_core (
 	  .alu_sel(alu_sel),
 	  .swi(dcd_swi),
 	  .inst(inst)
-  };
+  );
 
 
   arm_control ctrl(
 	  .inst(inst),
 	  .reg_we(reg_we),
+	  .cpsr_out(cpsr_out),
 	  .rd_we(rd_we),
 	  .pc_we(pc_we),
 	  .cpsr_we(cpsr_we),
@@ -161,7 +176,7 @@ module arm_core (
 	  .up_down(up_down),
 	  .mac_sel(mac_sel),
 	  .is_alu_for_mem_addr(is_alu_for_mem_addr)
-  };
+  );
 
   arm_mac my_mac(
 	  .mac_out(mac_out), 
@@ -182,7 +197,7 @@ module arm_core (
 	  .rm_num(rm_num),
 	  .rs_num(rs_num),
 	  .rd_num(rd_num),
-	  .rd_data(rd_num),
+	  .rd_data(rd_data),
 	  .rd_we(rd_we),
 	  .pc_in(pc_in),
 	  .pc_we(pc_we),
@@ -203,19 +218,6 @@ module arm_core (
 	  .potential_cout(potential_cout)
   );
   
-  wire [3:0]    dcd_rn, dcd_rd, dcd_rm;
-  wire [3:0]    dcd_mul_rn, dcd_mul_rd, dcd_mul_rs;
-
-  wire [7:0]    dcd_dp_imm;
-  wire [3:0]    dcd_dp_rotate;
-
-  wire          dcd_shift_fmt;
-  wire [1:0]    dcd_shift_type;
-  wire [4:0]    dcd_shift_amt;
-  wire [3:0]    dcd_shift_rs;
-  wire [11:0]   dcd_sdt_offset;
-  wire [23:0]   dcd_br_offset;
-  wire [23:0]   dcd_swi_offset;
 
   assign        dcd_rn = inst[19:16];
   assign        dcd_rd = inst[15:12];
@@ -244,7 +246,7 @@ module arm_core (
     if (rst_b) begin
       $display ( "=== Simulation Cycle %d ===", $time );
       $display ( "[pc=%x, inst=%x] [reset=%d, halted=%d]",
-                   pc, inst, ~rst_b, halted);
+                   pc_out, inst, ~rst_b, halted);
     end
   end
   //synopsys translate_on
@@ -290,17 +292,19 @@ endmodule // arm_core
 //// alu_sel  (input)  - Selects which operation is to be performed
 //// alu_cin  (input)  - Carry in
 ////
-module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for_mem_addri, up_down, potential_cout);
+module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for_mem_addr, up_down, potential_cout);
 
   output      [31:0]  alu_out;
   output      [3:0]  alu_cpsr;
-  input       [31:0]  alu_op1, alu_op2;
+  // input  signed     [31:0]  alu_op1, alu_op2;
+  input  [31:0]  alu_op1, alu_op2;
   input       [3:0]   alu_sel;
   input               alu_cin;
   input		      is_alu_for_mem_addr;
   input 	      up_down;
   input 	      potential_cout;
 
+  // logic signed [31:0] result;
   logic [31:0] result;
   logic cout;
   logic n_flag, z_flag, c_flag, v_flag;
@@ -311,22 +315,23 @@ module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for
 
   always_comb begin
 	  if (is_alu_for_mem_addr == 1) begin
-		  alu_out = (up_down) ? (alu_op1 + alu_op2) : (alu_op1 - alu_op2);
+		  result = (up_down) ? (unsigned'(alu_op1) + unsigned'(alu_op2)) : (unsigned'(alu_op1) - unsigned'(alu_op2));
 		  n_flag = 1'bx; z_flag = 1'bx; c_flag = 1'bx; v_flag = 1'bx;
 	  end else begin
 		  case(alu_sel)
 			  `OPD_AND: {cout, result} = alu_op1 & alu_op2;
 			  `OPD_EOR: {cout, result} = alu_op1 ^ alu_op2;
-			  `OPD_SUB: integer'{{cout, result}} = integer'(alu_op1) - integer'(alu_op2);
-			  `OPD_RSB: integer'{{cout, result}} = integer'(alu_op2) - integer'(alu_op1);
-			  `OPD_ADD: integer'{{cout, result}} = integer'(alu_op1) + integer'(alu_op2);
-			  `OPD_ADC: integer'{{cout, result}} = integer'(alu_op1) + integer'(alu_op2) + integer'(carry_in);
-			  `OPD_SBC: integer'{{cout, result}} = integer'(alu_op1) - integer'(alu_op2) + integer'(carry_in) - 1;
-			  `OPD_RSC: integer'{{cout, result}} = integer'(alu_op2) - integer'(alu_op1) + integer'(carry_in) - 1;
+			  `OPD_SUB: {cout, result} = alu_op1 - alu_op2;
+			  // `OPD_SUB: signed'({cout, result}) = signed'(alu_op1) - signed'(alu_op2);
+			  `OPD_RSB: {cout, result} = alu_op2 - alu_op1;
+			  `OPD_ADD: {cout, result} = alu_op1 + alu_op2;
+			  `OPD_ADC: {cout, result} = alu_op1 + alu_op2 + carry_in;
+			  `OPD_SBC: {cout, result} = alu_op1 - alu_op2 + carry_in - 1;
+			  `OPD_RSC: {cout, result} = alu_op2 - alu_op1 + carry_in - 1;
 			  `OPD_TST: {cout, result} = alu_op1 & alu_op2;
 			  `OPD_TEQ: {cout, result} = alu_op1 ^ alu_op2;
-			  `OPD_CMP: integer'{{cout, result}} = integer'(alu_op1) - integer'(alu_op2);
-			  `OPD_CMN: integer'{{cout, result}} = integer'(alu_op1) + integer'(alu_op2);
+			  `OPD_CMP: {cout, result} = alu_op1 - alu_op2;
+			  `OPD_CMN: {cout, result} = alu_op1 + alu_op2;
 			  `OPD_ORR: {cout, result} = alu_op1 | alu_op2;
 			  `OPD_MOV: {cout, result} = alu_op2;
 			  `OPD_BIC: {cout, result} = alu_op1 & ~alu_op2;
@@ -345,7 +350,7 @@ module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for
 				  z_flag = (result == 32'b0) ? 1 : 0;
 				  c_flag = cout;
 				  if (((alu_op1[31] == 1) && (alu_op2[31] == 0) && (result[31] == 0)) ||
-				      ((alu_op1[31] == 0]) && (alu_op2[31] == 1) && (result[31] == 1)))
+				      ((alu_op1[31] == 0) && (alu_op2[31] == 1) && (result[31] == 1)))
 				  	  v_flag = 1;
 				  else  
 					  v_flag = 0;
@@ -355,18 +360,18 @@ module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for
 				  z_flag = (result == 32'b0) ? 1 : 0;
 				  c_flag = cout;
 				  if (((alu_op1[31] == 1) && (alu_op2[31] == 0) && (result[31] == 1)) ||
-				      ((alu_op1[31] == 0]) && (alu_op2[31] == 1) && (result[31] == 0)))
+				      ((alu_op1[31] == 0) && (alu_op2[31] == 1) && (result[31] == 0)))
 				  	  v_flag = 1;
 				  else  
 					  v_flag = 0;
 			  end
 			  // `OPD_ADD, `OPD_ADC, `OPD_CMN: begin
-			  default:
+			  default: begin
 				  n_flag = (result[31] == 1) ? 1 : 0;
 				  z_flag = (result == 32'b0) ? 1 : 0;
 				  c_flag = cout;
 				  if (((alu_op1[31] == 0) && (alu_op2[31] == 0) && (result[31] == 1)) ||
-				      ((alu_op1[31] == 1]) && (alu_op2[31] == 1) && (result[31] == 0)))
+				      ((alu_op1[31] == 1) && (alu_op2[31] == 1) && (result[31] == 0)))
 				  	  v_flag = 1;
 				  else  
 					  v_flag = 0;
