@@ -72,7 +72,7 @@ module arm_core (
   output        halted;
 
   wire rd_we, pc_we, cpsr_we, rn_sel, reg_we, dcd_swi;
-  wire is_imm, is_alu_for_mem_addr, ld_byte_or_word, alu_or_mac, up_down, mac_sel;
+  wire is_imm, is_alu_for_mem_addr, ld_byte_or_word, alu_or_mac, up_down, mac_sel, is_for_store;
   wire [1:0] rd_sel, rd_data_sel, pc_in_sel;
 
   wire [3:0] rn_num, rm_num, rs_num, rd_num;
@@ -94,6 +94,7 @@ module arm_core (
   wire [3:0] mac_cpsr;
   wire [3:0] alu_cpsr_mask;
   wire [3:0] tmp_cpsr;
+  wire [3:0] final_cpsr_mask;
 
   wire [3:0]    dcd_rn, dcd_rd, dcd_rm;
   wire [3:0]    dcd_mul_rn, dcd_mul_rd, dcd_mul_rs;
@@ -116,7 +117,8 @@ module arm_core (
 
   assign rn_num = (rn_sel) ? dcd_rn : dcd_mul_rn;
   assign rm_num = inst[3:0];
-  assign rs_num = inst[11:8];
+  assign rs_num = (is_for_store) ? inst[15:12] : inst[11:8];
+  assign mem_data_in = rs_data; 	//only happens STR instruction, we borrow rs to represent source register
   assign rd_num = (rd_sel == 2) ? `R_LR : ((rd_sel == 1) ? dcd_rd : dcd_mul_rd);
   assign pc_in = (pc_in_sel == 2) ? pc_out : ((pc_in_sel == 1) ? (pc_out + 4) : branch_addr);
   assign data_result = (alu_or_mac) ? alu_out : mac_out;
@@ -175,6 +177,7 @@ module arm_core (
 	  .alu_or_mac(alu_or_mac),
 	  .up_down(up_down),
 	  .mac_sel(mac_sel),
+	  .is_for_store(is_for_store),
 	  .is_alu_for_mem_addr(is_alu_for_mem_addr)
   );
 

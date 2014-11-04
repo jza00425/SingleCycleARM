@@ -19,6 +19,7 @@ entity arm_control is
         alu_or_mac      : out    vl_logic;
         up_down         : out    vl_logic;
         mac_sel         : out    vl_logic;
+        is_for_store    : out    vl_logic;
         is_alu_for_mem_addr: out    vl_logic
     );
 end arm_control;

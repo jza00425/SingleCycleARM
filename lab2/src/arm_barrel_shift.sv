@@ -21,6 +21,7 @@ wire [31:0] rotate_imm;
 wire [1:0] shift_type;
 wire [63:0] double_rm_data_in;
 wire [7:0] rs_byte;
+wire [4:0] shift_amount;
 
 assign dp_imm = inst[7:0];
 assign dp_rotate = inst[11:8];
@@ -56,7 +57,7 @@ always_comb begin
 				`OPS_SAR: begin
 					// Corner case: ASR #0 => ASR #32
 					potential_cout = (shift_amount == 0) ? rm_data_in[31] : rm_data_in[shift_amount - 1];
-					operand2 = (shift_amount == 0) ? {32{rm_data_in[31]}} : rm_data_in >>> shift_amount;
+					operand2 = (shift_amount == 0) ? {32{rm_data_in[31]}} : signed'(signed'(rm_data_in) >>> shift_amount);
 				end
 				default: begin	//`OPS_ROR
 					// Corner case ROR #0 => RRX

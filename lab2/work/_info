@@ -6,28 +6,28 @@ Z0 d/home/tong/myProject/SingleCycleARM/lab2
 varm_alu
 Z1 Mx1 6 sv_std 3 std
 Z2 DXx6 sv_std 3 std 0 22 WnQ=;W1X^o9K1PIQTgInR3
-Ie_m2J58fQH2zU^[Ii72X=1
+I?@665NCa8Do@2QW1U3b4H2
 VFg>KQ]j5B9gS^=`;aU??C0
 S1
-Z3 w1414351153
+Z3 w1415068110
 Z4 8/home/tong/myProject/SingleCycleARM/lab2/src/arm_core.sv
 Z5 F/home/tong/myProject/SingleCycleARM/lab2/src/arm_core.sv
-L0 295
+L0 298
 Z6 OL;L;6.5f;42
 r1
 31
 Z7 !s102 -nocovercells
 Z8 o-work work -sv -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
 Z9 !s92 -work work -sv +incdir+/home/tong/myProject/SingleCycleARM/lab2/src -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
-!s100 7E18Y;>VgV3eH;j496`bO1
+!s100 LfIMP^1LQ`1Jl4D;29Ike0
 !s85 0
 varm_barrel_shift
 R1
 R2
-I5YlmC5JJJ>E;bEW:`<@dc1
+Id`X10WjbU;HSz:`N^MnJa3
 VlRf^1TlN:alMdVf;BDl7H0
 S1
-w1414353285
+w1415047202
 8/home/tong/myProject/SingleCycleARM/lab2/src/arm_barrel_shift.sv
 F/home/tong/myProject/SingleCycleARM/lab2/src/arm_barrel_shift.sv
 L0 7
@@ -37,15 +37,15 @@ r1
 R7
 R8
 R9
-!s100 BKDQbENZ`=C7ld`@;Z[9V3
+!s100 M7cEW`PWlWkERj02>W;o[3
 !s85 0
 varm_control
 R1
 R2
-I@AQ@<P]KzNgncTP;minka2
-V@2znJn`Rz70@gaS0kX8fz2
+Iz=1n6]VSRdnM9ZLk_8N[H0
+V<_mU^[WbEnbaT;oSL153Q1
 S1
-w1414350987
+w1415067798
 8/home/tong/myProject/SingleCycleARM/lab2/src/arm_control.sv
 F/home/tong/myProject/SingleCycleARM/lab2/src/arm_control.sv
 L0 5
@@ -55,12 +55,12 @@ r1
 R7
 R8
 R9
-!s100 _[Q?Meblb8eGFH9@N3mo>1
+!s100 h<[<7C1m25M@5iFNFalAW3
 !s85 0
 varm_core
 R1
 R2
-IIHaUSIYM<IQ^RcDEgS?nf1
+I<f3QA3Fl[O9k;bCJ2ZA?>3
 VP8>gb?ZHL`hJ]6PeYLo173
 S1
 R3
@@ -73,7 +73,7 @@ r1
 R7
 R8
 R9
-!s100 9_i@BWThURY3@X8QhK<mT1
+!s100 @3@_4Gdca]YZLn_dU30DU2
 !s85 0
 varm_decode
 R1
@@ -96,20 +96,20 @@ R9
 varm_mac
 R1
 R2
-I7aXJnTChRK5>X9?XGb`F>0
+I7jPZ2NXBSA>7N8oc12oni1
 Vk9NejNS^hHWSb]]@>`;9_0
 S1
 R3
 R4
 R5
-L0 394
+L0 397
 R6
 r1
 31
 R7
 R8
 R9
-!s100 Ie;jPmzFJiX;YBlgH=Z8J3
+!s100 8>l:A@ScFJOik;Xcd1GSV1
 !s85 0
 varm_mem
 IUaCXb7E;5cijG@2f]7Xld3
@@ -159,20 +159,20 @@ R11
 vregister
 R1
 R2
-IFWz9_Fcfaz?iVUlYJjW[k2
+IzlId_fA8D^gz:<VTM>OIJ3
 V=OJ_nzf;g;Q6kgBMn[ZCd1
 S1
 R3
 R4
 R5
-L0 430
+L0 433
 R6
 r1
 31
 R7
 R8
 R9
-!s100 74EzE5cBk_FiC_GHhJBOa0
+!s100 6zbV0k_SGajaZMz8fPlzW3
 !s85 0
 vtestbench
 !s100 iL=V_Rn6B:BMU<GPf[SfY1
