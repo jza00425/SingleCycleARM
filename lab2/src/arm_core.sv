@@ -74,6 +74,7 @@ module arm_core (
   wire rd_we, pc_we, cpsr_we, rn_sel, reg_we, dcd_swi;
   wire is_imm, is_alu_for_mem_addr, ld_byte_or_word, alu_or_mac, up_down, mac_sel, is_for_store;
   wire [1:0] rd_sel, rd_data_sel, pc_in_sel;
+  wire [31:0] carry_in;
 
   wire [3:0] rn_num, rm_num, rs_num, rd_num;
   logic [31:0] rd_data;

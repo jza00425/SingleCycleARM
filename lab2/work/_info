@@ -6,61 +6,62 @@ Z0 d/home/tong/myProject/SingleCycleARM/lab2
 varm_alu
 Z1 Mx1 6 sv_std 3 std
 Z2 DXx6 sv_std 3 std 0 22 WnQ=;W1X^o9K1PIQTgInR3
-I?@665NCa8Do@2QW1U3b4H2
+!s100 LfIMP^1LQ`1Jl4D;29Ike0
+IOz@dAzKg3HkLFWXhPcaY>2
 VFg>KQ]j5B9gS^=`;aU??C0
 S1
 Z3 w1415068110
-Z4 8/home/tong/myProject/SingleCycleARM/lab2/src/arm_core.sv
-Z5 F/home/tong/myProject/SingleCycleARM/lab2/src/arm_core.sv
+Z4 8./src/arm_core.sv
+Z5 F./src/arm_core.sv
 L0 298
 Z6 OL;L;6.5f;42
 r1
+!s85 0
 31
 Z7 !s102 -nocovercells
-Z8 o-work work -sv -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
-Z9 !s92 -work work -sv +incdir+/home/tong/myProject/SingleCycleARM/lab2/src -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
-!s100 LfIMP^1LQ`1Jl4D;29Ike0
-!s85 0
+Z8 o-sv -work work -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+Z9 !s92 -sv -work work +incdir+./src -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
 varm_barrel_shift
 R1
 R2
-Id`X10WjbU;HSz:`N^MnJa3
+!s100 M7cEW`PWlWkERj02>W;o[3
+IMj`UG`B=fH3b[=X49=n2`1
 VlRf^1TlN:alMdVf;BDl7H0
 S1
 w1415047202
-8/home/tong/myProject/SingleCycleARM/lab2/src/arm_barrel_shift.sv
-F/home/tong/myProject/SingleCycleARM/lab2/src/arm_barrel_shift.sv
+8./src/arm_barrel_shift.sv
+F./src/arm_barrel_shift.sv
 L0 7
 R6
 r1
+!s85 0
 31
 R7
 R8
 R9
-!s100 M7cEW`PWlWkERj02>W;o[3
-!s85 0
 varm_control
 R1
 R2
-Iz=1n6]VSRdnM9ZLk_8N[H0
+!s100 hBblBZJciB[nPFSi96@KU1
+ITH5kGlE8m2Jzz38:XFEM:3
 V<_mU^[WbEnbaT;oSL153Q1
 S1
-w1415067798
-8/home/tong/myProject/SingleCycleARM/lab2/src/arm_control.sv
-F/home/tong/myProject/SingleCycleARM/lab2/src/arm_control.sv
+w1415464415
+8./src/arm_control.sv
+F./src/arm_control.sv
 L0 5
 R6
 r1
+!s85 0
 31
 R7
 R8
 R9
-!s100 h<[<7C1m25M@5iFNFalAW3
-!s85 0
 varm_core
 R1
 R2
-I<f3QA3Fl[O9k;bCJ2ZA?>3
+!s100 @3@_4Gdca]YZLn_dU30DU2
+ImAC;ozCnaBGYCX?R^gzNY0
 VP8>gb?ZHL`hJ]6PeYLo173
 S1
 R3
@@ -69,34 +70,34 @@ R5
 L0 58
 R6
 r1
+!s85 0
 31
 R7
 R8
 R9
-!s100 @3@_4Gdca]YZLn_dU30DU2
-!s85 0
 varm_decode
 R1
 R2
-IhUef;32Z;`U9?mf01eXG90
+!s100 ne3NPHn02LkbMh@nnkWhW2
+IG9eP=NU?MS@0eF7ZzFOR@3
 V^IDG09Sak;ZVI2>kTn4T21
 S1
 w1414270045
-8/home/tong/myProject/SingleCycleARM/lab2/src/arm_decode.sv
-F/home/tong/myProject/SingleCycleARM/lab2/src/arm_decode.sv
+8./src/arm_decode.sv
+F./src/arm_decode.sv
 L0 49
 R6
 r1
+!s85 0
 31
 R7
 R8
 R9
-!s100 ne3NPHn02LkbMh@nnkWhW2
-!s85 0
 varm_mac
 R1
 R2
-I7jPZ2NXBSA>7N8oc12oni1
+!s100 8>l:A@ScFJOik;Xcd1GSV1
+I?PmQ4<NH44;<IWJ5Z[0<`1
 Vk9NejNS^hHWSb]]@>`;9_0
 S1
 R3
@@ -105,12 +106,11 @@ R5
 L0 397
 R6
 r1
+!s85 0
 31
 R7
 R8
 R9
-!s100 8>l:A@ScFJOik;Xcd1GSV1
-!s85 0
 varm_mem
 IUaCXb7E;5cijG@2f]7Xld3
 V6gM;OHhchlhkBBLm<ec4N1
@@ -127,7 +127,6 @@ Z11 !s92 -work work +incdir+/home/tong/myProject/SingleCycleARM/lab2/src -nocove
 !s100 7iZDz_FIbOh;Y`jM_b2PZ2
 !s85 0
 vclock
-!s100 =VGDPS_aDNn2X_P6mJz3Z0
 IQbZUn>lV56<Ej078[L@`Z2
 Vi`olYVWkN<8RH3LWH<QFk3
 Z12 w1390516756
@@ -136,11 +135,12 @@ Z14 F/home/tong/myProject/SingleCycleARM/lab2/447src/testbench.v
 L0 92
 R6
 r1
-!s85 0
 31
 R7
 R10
 R11
+!s100 =VGDPS_aDNn2X_P6mJz3Z0
+!s85 0
 vregfile
 IZLbkn0ghzhV>dOgP@LDUf0
 V3ZYR1AhCB`2<hBgO;NX9L0
@@ -159,7 +159,8 @@ R11
 vregister
 R1
 R2
-IzlId_fA8D^gz:<VTM>OIJ3
+!s100 6zbV0k_SGajaZMz8fPlzW3
+IUJ[YD;N9BfoQQ8h^N_BH[3
 V=OJ_nzf;g;Q6kgBMn[ZCd1
 S1
 R3
@@ -168,14 +169,12 @@ R5
 L0 433
 R6
 r1
+!s85 0
 31
 R7
 R8
 R9
-!s100 6zbV0k_SGajaZMz8fPlzW3
-!s85 0
 vtestbench
-!s100 iL=V_Rn6B:BMU<GPf[SfY1
 ISRXjMQ[<H?nB9LHkiEPT31
 VhGfW:390DM[oDMzegDH9`2
 R12
@@ -184,8 +183,9 @@ R14
 L0 41
 R6
 r1
-!s85 0
 31
 R7
 R10
 R11
+!s100 iL=V_Rn6B:BMU<GPf[SfY1
+!s85 0

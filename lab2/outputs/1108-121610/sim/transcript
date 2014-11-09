@@ -1,0 +1,48 @@
+# //  QuestaSim-64 6.5f Jun 16 2010 Linux 3.13.0-39-generic
+# //
+# //  Copyright 1991-2010 Mentor Graphics Corporation
+# //              All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND 
+# //  PROPRIETARY INFORMATION WHICH IS THE PROPERTY
+# //  OF MENTOR GRAPHICS CORPORATION OR ITS LICENSORS
+# //  AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Project file /home/tong/myProject/SingleCycleARM/lab2/SingleCycleArm.mpf was not found.
+# Unable to open project.
+do run.tcl
+# Reading /mgc/anacad2009_2c/questasim/v6.5f/linux_x86_64/../modelsim.ini
+# "work" maps to directory work. (Default mapping)
+# QuestaSim-64 vlog 6.5f Compiler 2010.06 Jun 16 2010
+# -- Compiling module arm_barrel_shift
+# -- Compiling module arm_control
+# -- Compiling module arm_core
+# -- Compiling module arm_alu
+# -- Compiling module arm_mac
+# -- Compiling module register
+# -- Compiling module arm_decode
+# 
+# Top level modules:
+# 	arm_core
+# QuestaSim-64 vlog 6.5f Compiler 2010.06 Jun 16 2010
+# -- Compiling module arm_mem
+# -- Compiling module regfile
+# -- Compiling module testbench
+# -- Compiling module clock
+# 
+# Top level modules:
+# 	regfile
+# 	testbench
+# vsim work.testbench 
+# Loading work.testbench
+# Loading work.clock
+# Loading sv_std.std
+# Loading work.arm_core
+# Loading work.arm_alu
+# Loading work.arm_decode
+# Loading work.arm_control
+# Loading work.arm_mac
+# Loading work.regfile
+# Loading work.arm_barrel_shift
+# Loading work.register
+# Loading work.arm_mem

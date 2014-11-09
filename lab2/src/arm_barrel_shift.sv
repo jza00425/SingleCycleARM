@@ -22,6 +22,8 @@ wire [1:0] shift_type;
 wire [63:0] double_rm_data_in;
 wire [7:0] rs_byte;
 wire [4:0] shift_amount;
+wire shift_fmt;
+wire [4:0] rs_by_32;
 
 assign dp_imm = inst[7:0];
 assign dp_rotate = inst[11:8];

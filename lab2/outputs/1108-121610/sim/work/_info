@@ -1,0 +1,191 @@
+m255
+K3
+13
+cModel Technology
+Z0 d/home/tong/myProject/SingleCycleARM/lab2/outputs/1108-121610/sim
+varm_alu
+Z1 Mx1 6 sv_std 3 std
+Z2 DXx6 sv_std 3 std 0 22 WnQ=;W1X^o9K1PIQTgInR3
+IlH_ODf9ZBYY4Z64D<d9[o3
+VFg>KQ]j5B9gS^=`;aU??C0
+S1
+Z3 w1415466970
+Z4 8./src/arm_core.sv
+Z5 F./src/arm_core.sv
+L0 298
+Z6 OL;L;6.5f;42
+r1
+31
+Z7 !s102 -nocovercells
+Z8 o-sv -work work -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+Z9 !s92 -sv -work work +incdir+./src/ -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+!s100 LfIMP^1LQ`1Jl4D;29Ike0
+!s85 0
+varm_barrel_shift
+R1
+R2
+I2^O8finfXYIS[AMkPiYgN3
+VlRf^1TlN:alMdVf;BDl7H0
+S1
+R3
+8./src/arm_barrel_shift.sv
+F./src/arm_barrel_shift.sv
+L0 7
+R6
+r1
+31
+R7
+R8
+R9
+!s100 M7cEW`PWlWkERj02>W;o[3
+!s85 0
+varm_control
+R1
+R2
+I>MA0B[ek>>V2IT]AzHJFn3
+V<_mU^[WbEnbaT;oSL153Q1
+S1
+R3
+8./src/arm_control.sv
+F./src/arm_control.sv
+L0 5
+R6
+r1
+31
+R7
+R8
+R9
+!s100 hBblBZJciB[nPFSi96@KU1
+!s85 0
+varm_core
+R1
+R2
+I4Fo0Mb_2Y]U7Anz8eIWBD2
+VP8>gb?ZHL`hJ]6PeYLo173
+S1
+R3
+R4
+R5
+L0 58
+R6
+r1
+31
+R7
+R8
+R9
+!s100 @3@_4Gdca]YZLn_dU30DU2
+!s85 0
+varm_decode
+R1
+R2
+Iom=oYTRAlA@0_N_Q^?7ZM0
+V^IDG09Sak;ZVI2>kTn4T21
+S1
+R3
+8./src/arm_decode.sv
+F./src/arm_decode.sv
+L0 49
+R6
+r1
+31
+R7
+R8
+R9
+!s100 ne3NPHn02LkbMh@nnkWhW2
+!s85 0
+varm_mac
+R1
+R2
+IS@CbW4?e:9KJoAk8D39>D3
+Vk9NejNS^hHWSb]]@>`;9_0
+S1
+R3
+R4
+R5
+L0 397
+R6
+r1
+31
+R7
+R8
+R9
+!s100 8>l:A@ScFJOik;Xcd1GSV1
+!s85 0
+varm_mem
+!s100 7iZDz_FIbOh;Y`jM_b2PZ2
+I0jm1cF3m<CaaRo3H0nQ0f2
+V6gM;OHhchlhkBBLm<ec4N1
+R3
+8./src/arm_mem.v
+F./src/arm_mem.v
+L0 72
+R6
+r1
+!s85 0
+31
+R7
+Z10 o-work work -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+Z11 !s92 -work work +incdir+./src/ -nocovercells -L mtiAvm -L mtiOvm -L mtiUPF
+vclock
+!s100 =VGDPS_aDNn2X_P6mJz3Z0
+IXT`lXY^ObS=H;g1Pj3WCN0
+Vi`olYVWkN<8RH3LWH<QFk3
+R3
+Z12 8./src/testbench.v
+Z13 F./src/testbench.v
+L0 92
+R6
+r1
+!s85 0
+31
+R7
+R10
+R11
+vregfile
+!s100 `h`O@z<Id@YQoCa]:OOeS1
+IHlc?PUhK`CF9TElZH[K<z3
+V3ZYR1AhCB`2<hBgO;NX9L0
+R3
+8./src/regfile.v
+F./src/regfile.v
+L0 34
+R6
+r1
+!s85 0
+31
+R7
+R10
+R11
+vregister
+R1
+R2
+IG32=AdK@X9@R9e9<k4P:E3
+V=OJ_nzf;g;Q6kgBMn[ZCd1
+S1
+R3
+R4
+R5
+L0 433
+R6
+r1
+31
+R7
+R8
+R9
+!s100 6zbV0k_SGajaZMz8fPlzW3
+!s85 0
+vtestbench
+!s100 iL=V_Rn6B:BMU<GPf[SfY1
+I=kP_7C`R=Ve;l^2KkNY<33
+VhGfW:390DM[oDMzegDH9`2
+R3
+R12
+R13
+L0 41
+R6
+r1
+!s85 0
+31
+R7
+R10
+R11
