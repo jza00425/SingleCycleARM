@@ -34,19 +34,19 @@ assign is_for_store = (inst[27:26] == 2'b01) && (inst[20] == 0);
  * But Single Data Transfer Instruction, when inst[25] == 0, operand2 is
  * immediate
  */
-assign is_imm = ((~inst[26] & inst[25]) | (inst[26] & ~inst[25])) ? 1 : 0;
-assign is_alu_for_mem_addr = (inst[27:26] == 2'b01) ? 1 : 0;
-assign up_down = (inst[23]) ? 1 : 0;
-assign mac_sel = (inst[21]) ? 1 : 0;
+assign is_imm = ((~inst[26] & inst[25]) | (inst[26] & ~inst[25])) ? 1'b1 : 1'b0;
+assign is_alu_for_mem_addr = (inst[27:26] == 2'b01) ? 1'b1 : 1'b0;
+assign up_down = (inst[23]) ? 1'b1 : 1'b0;
+assign mac_sel = (inst[21]) ? 1'b1 : 1'b0;
 
 always_comb begin
 	case (inst[31:28])
-		 `COND_EQ: exc_en = cpsr_out[30] ? 1 : 0;
-		 `COND_NE: exc_en = cpsr_out[30] ? 0 : 1;
-	         `COND_GE: exc_en = (cpsr_out[31] == cpsr_out[28]) ? 1 : 0;
-		 `COND_LT: exc_en = (cpsr_out[31] != cpsr_out[28]) ? 1 : 0;
-		 `COND_GT: exc_en = (~cpsr_out[30] && (cpsr_out[31] == cpsr_out[28])) ? 1 : 0;
-		 `COND_LE: exc_en = (cpsr_out[30] || (cpsr_out[31] != cpsr_out[28])) ? 1 : 0;
+		 `COND_EQ: exc_en = cpsr_out[30] ? 1'b1 : 1'b0;
+		 `COND_NE: exc_en = cpsr_out[30] ? 1'b0 : 1'b1;
+	         `COND_GE: exc_en = (cpsr_out[31] == cpsr_out[28]) ? 1'b1 : 1'b0;
+		 `COND_LT: exc_en = (cpsr_out[31] != cpsr_out[28]) ? 1'b1 : 1'b0;
+		 `COND_GT: exc_en = (~cpsr_out[30] && (cpsr_out[31] == cpsr_out[28])) ? 1'b1 : 1'b0;
+		 `COND_LE: exc_en = (cpsr_out[30] || (cpsr_out[31] != cpsr_out[28])) ? 1'b1 : 1'b0;
 		 default: exc_en = 1;
 	 endcase
 end
@@ -71,7 +71,7 @@ always_comb begin
 		rn_sel = 1'bx;
 		rd_sel = 'x;
 		rd_data_sel = 'x;
-		pc_in_sel = 2;
+		pc_in_sel = 2'b10;
 		halted = 1'b1;
 		mem_write_en = 0;
 		ld_byte_or_word = 1'bx;
@@ -91,7 +91,7 @@ always_comb begin
 			rd_data_sel = 'x;
 		end else begin
 			rd_we = 1'b1;
-			rd_sel = 2;
+			rd_sel = 2'b10;
 			rd_data_sel = '0;
 		end
 	end else if (inst[27:26] == 2'b01) begin
@@ -105,9 +105,9 @@ always_comb begin
 
 		if (inst[20] == 1'b1) begin 	//LOAD
 			rd_we = 1'b1;
-			rd_data_sel = 2;
+			rd_data_sel = 2'b10;
 			mem_write_en = 0;
-			ld_byte_or_word = (inst[22]) ? 1 : 0;
+			ld_byte_or_word = (inst[22]) ? 1'b1 : 1'b0;
 		end else begin			//STORE
 			rd_we = 1'b0;
 			rd_data_sel = 1;
@@ -117,7 +117,7 @@ always_comb begin
 	end else if ((inst[27:25] == 3'b000) && (inst[7:4] == 4'b1001)) begin //MUL
 		rd_we = 1'b1;
 		pc_we = 1'b1;
-		cpsr_we = (inst[20] == 1'b1) ? 1 : 0;
+		cpsr_we = (inst[20] == 1'b1) ? 1'b1 : 1'b0;
 		rn_sel = 1'b0;
 		rd_sel = 0;
 		rd_data_sel = 1;
@@ -130,7 +130,7 @@ always_comb begin
 		rd_we = (reg_we) ? 1'b1 : 1'b0;
 		// rd_we = 1'b1;
 		pc_we = 1'b1;
-		cpsr_we = (inst[20] == 1'b1) ? 1 : 0;
+		cpsr_we = (inst[20] == 1'b1) ? 1'b1 : 1'b0;
 		rn_sel = 1'b1;
 		rd_sel = 1;
 		rd_data_sel = 1;

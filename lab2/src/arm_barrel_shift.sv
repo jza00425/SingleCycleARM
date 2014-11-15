@@ -37,7 +37,8 @@ assign shift_amount = inst[11:7];
 assign double_rm_data_in = {2{rm_data_in}};
 
 assign rs_byte = rs_data_in[7:0];
-assign rs_by_32 = rs_byte % 32;
+// assign rs_by_32 = rs_byte % 32;
+assign rs_by_32 = rs_byte >> 5;
 
 always_comb begin
 	if (is_imm) begin
@@ -59,7 +60,7 @@ always_comb begin
 				`OPS_SAR: begin
 					// Corner case: ASR #0 => ASR #32
 					potential_cout = (shift_amount == 0) ? rm_data_in[31] : rm_data_in[shift_amount - 1];
-					operand2 = (shift_amount == 0) ? {32{rm_data_in[31]}} : signed'(signed'(rm_data_in) >>> shift_amount);
+					operand2 = (shift_amount == 0) ? {32{rm_data_in[31]}} : unsigned'(signed'(rm_data_in) >>> shift_amount);
 				end
 				default: begin	//`OPS_ROR
 					// Corner case ROR #0 => RRX

@@ -344,14 +344,14 @@ module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for
 
 		  case(alu_sel)
 			  `OPD_AND, `OPD_EOR, `OPD_TST, `OPD_TEQ, `OPD_ORR, `OPD_MOV, `OPD_BIC, `OPD_MVN: begin
-				  n_flag = (result[31] == 1) ? 1 : 0;
-				  z_flag = (result == 32'b0) ? 1 : 0;
+				  n_flag = (result[31] == 1) ? 1'b1 : 1'b0;
+				  z_flag = (result == 32'b0) ? 1'b1 : 1'b0;
 				  c_flag = potential_cout;
 				  v_flag = 1'bx;
 			  end
 			  `OPD_SUB, `OPD_SBC, `OPD_CMP: begin
-				  n_flag = (result[31] == 1) ? 1 : 0;
-				  z_flag = (result == 32'b0) ? 1 : 0;
+				  n_flag = (result[31] == 1) ? 1'b1 : 1'b0;
+				  z_flag = (result == 32'b0) ? 1'b1 : 1'b0;
 				  c_flag = cout;
 				  if (((alu_op1[31] == 1) && (alu_op2[31] == 0) && (result[31] == 0)) ||
 				      ((alu_op1[31] == 0) && (alu_op2[31] == 1) && (result[31] == 1)))
@@ -360,8 +360,8 @@ module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for
 					  v_flag = 0;
 			  end
 			  `OPD_RSB, `OPD_RSC: begin
-				  n_flag = (result[31] == 1) ? 1 : 0;
-				  z_flag = (result == 32'b0) ? 1 : 0;
+				  n_flag = (result[31] == 1) ? 1'b1 : 1'b0;
+				  z_flag = (result == 32'b0) ? 1'b1 : 1'b0;
 				  c_flag = cout;
 				  if (((alu_op1[31] == 1) && (alu_op2[31] == 0) && (result[31] == 1)) ||
 				      ((alu_op1[31] == 0) && (alu_op2[31] == 1) && (result[31] == 0)))
@@ -371,8 +371,8 @@ module arm_alu(alu_out, alu_cpsr, alu_op1, alu_op2, alu_sel, alu_cin, is_alu_for
 			  end
 			  // `OPD_ADD, `OPD_ADC, `OPD_CMN: begin
 			  default: begin
-				  n_flag = (result[31] == 1) ? 1 : 0;
-				  z_flag = (result == 32'b0) ? 1 : 0;
+				  n_flag = (result[31] == 1) ? 1'b1 : 1'b0;
+				  z_flag = (result == 32'b0) ? 1'b1 : 1'b0;
 				  c_flag = cout;
 				  if (((alu_op1[31] == 0) && (alu_op2[31] == 0) && (result[31] == 1)) ||
 				      ((alu_op1[31] == 1) && (alu_op2[31] == 1) && (result[31] == 0)))
@@ -414,7 +414,7 @@ module arm_mac(mac_out, mac_cpsr, mac_op1, mac_op2, mac_acc, mac_sel);
 	  end else begin
 		  {high32, result} = mac_op1 * mac_op2;
 	  end
-	  n_flag = (result[31] == 1) ? 1 : 0;
+	  n_flag = (result[31] == 1) ? 1'b1 : 1'b0;
 	  z_flag = (result == 0) ? 1 : 0;
 	  c_flag = 1'bx;
 	  v_flag = 1'bx;
